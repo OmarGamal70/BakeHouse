@@ -11,11 +11,11 @@ pipeline {
                 script {
                     echo 'build'
                     if (params.ENV_ITI == "release") {
-                        withCredentials([usernamePassword(credentialsId: 'iti-sys-admin-mnf-docker-cred', usernameVariable: 'USERNAME_SYSADMIN', passwordVariable: 'PASSWORD_SYSADMIN')]) {
+                        withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'USERNAME_SYSADMIN', passwordVariable: 'PASSWORD_SYSADMIN')]) {
                             sh '''
                                 docker login -u ${USERNAME_SYSADMIN} -p ${PASSWORD_SYSADMIN}
-                                docker build -t kareemelkasaby/bakehouseitisysadmin:v${BUILD_NUMBER} .
-                                docker push kareemelkasaby/bakehouseitisysadmin:v${BUILD_NUMBER}
+                                docker build -t omargamal2712/bakehouseitisysadmin:v${BUILD_NUMBER} .
+                                docker push omargamal2712/bakehouseitisysadmin:v${BUILD_NUMBER}
                                 echo ${BUILD_NUMBER} > ../build_num.txt
                                 echo ${ENV_ITI}
                             '''
