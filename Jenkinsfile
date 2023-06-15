@@ -1,10 +1,7 @@
 pipeline {
     agent {
-        label "sys-admin-mnf"
-    }
-//     parameters {
-//         choice(name: 'ENV_ITI', choices: ['dev', 'test', 'prod', "release"])
-//     }
+        label "sys-sdmin-mnf"
+    }   
     stages {
         stage('build') {
             steps {
@@ -17,11 +14,11 @@ pipeline {
                                 docker build -t omargamal2712/bakehouseitisysadmin:v${BUILD_NUMBER} .
                                 docker push omargamal2712/bakehouseitisysadmin:v${BUILD_NUMBER}
                                 echo ${BUILD_NUMBER} > ../build_num.txt
-                                echo ${ENV_ITI}
+                                echo ${BRANCH_NAME}
                             '''
                         }
                     } else {
-                        echo "user chose ${params.ENV_ITI}"
+                        echo "user chose ${params.BRANCH_NAME}"
                     }
                 }
             }
@@ -34,15 +31,16 @@ pipeline {
                         withCredentials([file(credentialsId: 'iti-sys-admin-mnf-kubeconfig-cred', variable: 'KUBECONFIG_ITI')]) {
                             sh '''
                                 export BUILD_NUMBER=$(cat ../build_num.txt)
-                                mv Deployment/deploy.yaml Deployment/deploy.yaml.tmp
-                                cat Deployment/deploy.yaml.tmp | envsubst > Deployment/deploy.yaml
-                                rm -rf Deployment/deploy.yaml.tmp
+                                mv Helm-Deployment/templates/deploy.yaml Helm-Deployment/templates/deploy.yaml.tmp
+                                cat Helm-Deployment/templates/deploy.yaml.tmp | envsubst > Helm-Deployment/templates/deploy.yaml
+                                rm -rf Helm-Deployment/templates/deploy.yaml.tmp
                                 kubectl apply -f Deployment --kubeconfig ${KUBECONFIG_ITI} -n ${BRANCH_NAME}
                             '''
                         }
                     } else {
-                        echo "user chose ${params.ENV_ITI}"
+                        echo "user chose ${params.BRANCH_NAME}"
                     }
+                    echo "it works"
                 }
             }
         }
