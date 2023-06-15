@@ -38,6 +38,7 @@ pipeline {
                                 cat Deployment/deploy.yaml.tmp | envsubst > Deployment/deploy.yaml
                                 rm -rf Deployment/deploy.yaml.tmp
                                 kubectl apply -f Deployment/service.yaml --kubeconfig ${KUBECONFIG_ITI} -n ${BRANCH_NAME}
+                                kubectl apply -f Deployment/deploy.yaml --kubeconfig ${KUBECONFIG_ITI} -n ${BRANCH_NAME}
                             '''
                         }
                     } else {
