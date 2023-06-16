@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     echo 'build'
-                    if (params.ENV_ITI == "release") {
+                    if (BRANCH_NAME == "release") {
                         withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'USERNAME_SYSADMIN', passwordVariable: 'PASSWORD_SYSADMIN')]) {
                             sh '''
                                 docker login -u ${USERNAME_SYSADMIN} -p ${PASSWORD_SYSADMIN}
@@ -21,7 +21,7 @@ pipeline {
                             '''
                         }
                     } else {
-                        echo "user chose ${params.ENV_ITI}"
+                        echo "user chose ${BRANCH_NAME}"
                     }
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo 'deploy'
                 script {
-                    if (params.ENV_ITI == "dev" || params.ENV_ITI == "test" || params.ENV_ITI == "prod") {
+                    if (BRANCH_NAME == "dev" || BRANCH_NAME == "test" || BRANCH_NAME == "prod") {
                         withCredentials([file(credentialsId: 'iti-sys-admin-mnf-kubeconfig-cred', variable: 'KUBECONFIG_ITI')]) {
                             sh '''
                                 export BUILD_NUMBER=$(cat ../build_num.txt)
@@ -42,7 +42,7 @@ pipeline {
                             '''
                         }
                     } else {
-                        echo "user chose ${params.ENV_ITI}"
+                        echo "user chose ${BRANCH_NAME}"
                     }
                 }
             }
